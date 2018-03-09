@@ -2,6 +2,7 @@
 -- https://guide.elm-lang.org/architecture/effects/time.html
 
 import Html exposing (Html, div, p, text, button)
+import Html.Attributes exposing (style)
 import Time exposing (Time, second)
 import Html.Events exposing (onClick)
 
@@ -40,19 +41,22 @@ init =
 -- UPDATE
 
 type Msg
-  = Switch Player | Tick Time
+  = Switch (Maybe Player) | Tick Time
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg clocks =
   case msg of
-    Switch newPlayer ->
-      (newTime newPlayer clocks, Cmd.none)
+    Switch Nothing -> ({ clocks | active = Just A } , Cmd.none)
+    Switch (Just newPlayer) ->
+      ({ clocks | active = Just newPlayer }, Cmd.none)
     Tick _ ->
       case clocks.active of
           Nothing ->
             (clocks, Cmd.none)
           Just p ->
             (newTime p clocks, Cmd.none)
+
+
 
 newTime : Player -> Model -> Model
 newTime p m =
@@ -73,6 +77,14 @@ subscriptions model =
   Time.every second Tick
 
 
+neext : Player -> Player
+neext p =
+  case p of
+    A -> B
+    B -> C
+    C -> D
+    D -> A
+
 -- VIEW
 
 view : Model -> Html Msg
@@ -81,19 +93,12 @@ view clocks =
       [ p [ ]
         [ text (toString clocks.active) ]
       , div [ ]
-        [ text (toString clocks.a)
-        , button [ onClick ( Switch A) ] [ text "GO" ]
-        ]
+        [ text (toString clocks.a) ]
       , div [ ]
-        [ text (toString clocks.b)
-        , button [ onClick ( Switch B) ] [ text "GO" ]
-        ]
+        [ text (toString clocks.b) ]
       , div [ ]
-        [ text (toString clocks.c)
-        , button [ onClick ( Switch C) ] [ text "GO" ]
-        ]
+        [ text (toString clocks.c) ]
       , div [ ]
-        [ text (toString clocks.d)
-        , button [ onClick ( Switch D) ] [ text "GO" ]
-        ]
+        [ text (toString clocks.d) ]
+      , button [ style [("padding", "20px")], onClick ( Switch (Maybe.map neext clocks.active)) ] [ text "GO" ]
     ]
