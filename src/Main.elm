@@ -87,24 +87,16 @@ neext p =
 
 bgColor : Model -> Player -> Attribute msg
 bgColor clocks player =
-  case player of
-    A -> if clocks.a <= 0 then
-        style [("background-color", "red")]
-      else
-        style [("background-color", "white")]
-    B -> if clocks.b <= 0 then
-        style [("background-color", "red")]
-      else
-        style [("background-color", "white")]
-    C -> if clocks.c <= 0 then
-        style [("background-color", "red")]
-      else
-        style [("background-color", "white")]
-    D -> if clocks.d <= 0 then
-        style [("background-color", "red")]
-      else
-        style [("background-color", "white")]
-
+  let clockTime = case player of
+    A -> clocks.a
+    B -> clocks.b
+    C -> clocks.c
+    D -> clocks.d
+  in
+    if clockTime <= 0 then
+      style [("background-color", "red")]
+    else
+      style [("background-color", "white")]
 
 
 -- VIEW
