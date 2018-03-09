@@ -1,7 +1,7 @@
 -- Read more about this program in the official Elm guide:
 -- https://guide.elm-lang.org/architecture/effects/time.html
 
-import Html exposing (Html, div, p, text, button)
+import Html exposing (Html, Attribute, div, p, text, button)
 import Html.Attributes exposing (style)
 import Time exposing (Time, second)
 import Html.Events exposing (onClick)
@@ -28,10 +28,10 @@ type alias Clocks =
 type alias Model = Clocks
 
 startingTime =
-  { a = 300
-  , b = 300
-  , c = 300
-  , d = 300
+  { a = 3
+  , b = 3
+  , c = 3
+  , d = 3
   , active = Nothing }
 
 init : (Model, Cmd Msg)
@@ -85,20 +85,41 @@ neext p =
     C -> D
     D -> A
 
--- VIEW
+bgColor : Model -> Player -> Attribute msg
+bgColor clocks player =
+  case player of
+    A -> if clocks.a <= 0 then
+        style [("background-color", "red")]
+      else
+        style [("background-color", "white")]
+    B -> if clocks.b <= 0 then
+        style [("background-color", "red")]
+      else
+        style [("background-color", "white")]
+    C -> if clocks.c <= 0 then
+        style [("background-color", "red")]
+      else
+        style [("background-color", "white")]
+    D -> if clocks.d <= 0 then
+        style [("background-color", "red")]
+      else
+        style [("background-color", "white")]
 
+
+
+-- VIEW
 view : Model -> Html Msg
 view clocks =
     div [ ]
       [ p [ ]
-        [ text (toString clocks.active) ]
+        [ p [ ] [ text (toString clocks.active) ] ]
       , div [ ]
-        [ text (toString clocks.a) ]
+        [ p [ bgColor clocks A ] [ text (toString clocks.a) ] ]
       , div [ ]
-        [ text (toString clocks.b) ]
+        [ p [ bgColor clocks B ] [ text (toString clocks.b) ] ]
       , div [ ]
-        [ text (toString clocks.c) ]
+        [ p [ bgColor clocks C ] [ text (toString clocks.c) ] ]
       , div [ ]
-        [ text (toString clocks.d) ]
+        [ p [ bgColor clocks D ] [ text (toString clocks.d) ] ]
       , button [ style [("padding", "20px")], onClick ( Switch (Maybe.map neext clocks.active)) ] [ text "GO" ]
     ]
